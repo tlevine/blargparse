@@ -23,10 +23,17 @@ class BlargParser(argparse.ArgumentParser):
 
     def add_subparsers(self, **kwargs):
         out = super(BlargParser, self).add_subparsers(**kwargs)
+        self._blarg_subparsers = out
         return out
 
     def parse_args(self, *args, **kwargs):
         namespace = super(BlargParser, self).parse_args(*args, **kwargs)
+
+        if hasattr(self, '_blarg_subparsers'):
+            for subparser in dict(self._blarg_subparsers._get_kwargs())['choices'].values():
+                for func in subparser._aggregates:
+                    func(namespace)
+
         for func in self._aggregates:
             func(namespace)
         return namespace
