@@ -41,5 +41,4 @@ class BlargParser(argparse.ArgumentParser):
         if hasattr(self, '_blarg_children'):
             for key, value in dict(self._blarg_children._get_kwargs())['choices'].items():
                 if key == getattr(namespace, self._blarg_subparser_dest):
-                    for func in value._aggregate(namespace):
-                        func(namespace)
+                    value._aggregate(namespace)

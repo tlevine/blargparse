@@ -109,7 +109,7 @@ def test_multiple_subparsers():
 
     b = sps.add_parser('b')
     b.add_argument('--bbb', '-b')
-    a.add_aggregate('BBB', lambda args:args.bbb.upper())
+    b.add_aggregate('BBB', lambda args:args.bbb.upper())
 
     assert bp.parse_args([]) == argparse.Namespace(command = None)
     assert bp.parse_args(['a', '--aaa', 'tom']) == argparse.Namespace(command = None, aaa = 'tom', AAA = 'TOM')
