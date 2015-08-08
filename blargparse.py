@@ -21,20 +21,30 @@ class BlargParser(argparse.ArgumentParser):
 
         self._aggregates.append(g)
 
+    def add_subparsers(self, **kwargs):
+        out = super(BlargParser, self).add_subparsers(**kwargs)
+        self._blarg_children = out
+        return out
+
     def parse_args(self, *args, **kwargs):
         namespace = super(BlargParser, self).parse_args(*args, **kwargs)
 
-        for func in self._aggregates:
-            func(namespace)
+        for descendant in self._blarg_descendants():
+            for func in descendant._aggregates:
+                func(namespace)
 
         return namespace
 
+    def _blarg_descendants(self):
+        yield self
+        if hasattr(self, '_blarg_children'):
+            yield from dict(self._blarg_children._get_kwargs())['choices'].values()
 '''
     def _all_aggregates(self):
        #yield self._aggregates
         parent = self
         if hasattr(parent, '_blarg_children'):
-            for child in dict(parent._blarg_children_get_kwargs())['choices'].values():
+            for child in 
                 print(child)
        #        yield from child._all_aggregates()
 '''
