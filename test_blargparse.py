@@ -14,6 +14,9 @@ def get_blargparser(left, right):
 def make_range(args):
     return range(args.left, args.right)
 
+def make_range_mutate(args):
+    args.numbers = range(args.left, args.right)
+
 def make_range_and_delete(args):
     r = make_range(args)
     del(args.left, args.right)
@@ -21,12 +24,22 @@ def make_range_and_delete(args):
 
 testcases_aggregates = [
     (get_blargparser(0, 1000), 'range', make_range, {'range': lambda args:range(0, 1000)}),
+    (get_blargparser(0, 1000), None, make_range_mutate, {'numbers': lambda args:range(0, 1000)}),
 ]
 
 @pytest.mark.parametrize('blargparser, dest, func, expected_aggregates', testcases_aggregates)
 def test_add_aggregate(blargparser, dest, func, expected_aggregates):
     blargparser.add_aggregate(dest, func = func)
     assert set(blargparser._aggregates) == set(expected_aggregates)
+
+def test_aggregate_dest():
+    bp = get_blargparser(0, 100)
+    bp.add_aggregate(func = lambda:None)
+    bp.add_aggregate('two', lambda:None)
+    bp.add_aggregate(dest = 'three', func = lambda:None)
+    with pytest.raises(TypeError):
+        bp.add_aggregate(4, func = lambda:None)
+    bp.add_aggregate(dest = None, func = lambda:None)
 
 def test_parse_args():
     bp = get_blargparser(0, 100)
