@@ -23,17 +23,26 @@ class BlargParser(argparse.ArgumentParser):
 
     def add_subparsers(self, **kwargs):
         out = super(BlargParser, self).add_subparsers(**kwargs)
-        self._blarg_subparsers = out
+        self._blarg_children = out
         return out
 
     def parse_args(self, *args, **kwargs):
+        if hasattr(self, '_blarg_children'):
+            assert False, dict(self._blarg_children._get_kwargs())['choices']
         namespace = super(BlargParser, self).parse_args(*args, **kwargs)
 
-        if hasattr(self, '_blarg_subparsers'):
-            for subparser in dict(self._blarg_subparsers._get_kwargs())['choices'].values():
-                for func in subparser._aggregates:
-                    func(namespace)
+      # if hasattr(self, '_blarg_children'):
+      #     print(self._blarg_children)
+      # for func in self._all_aggregates():
+      #     print(func)
+      #     func(namespace)
 
-        for func in self._aggregates:
-            func(namespace)
         return namespace
+
+    def _all_aggregates(self):
+       #yield self._aggregates
+        parent = self
+        if hasattr(parent, '_blarg_children'):
+            for child in dict(parent._blarg_children_get_kwargs())['choices'].values():
+                print(child)
+       #        yield from child._all_aggregates()
