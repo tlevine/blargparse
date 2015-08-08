@@ -65,3 +65,8 @@ def test_parse_args_mutate():
     bp.add_aggregate('range2', make_range_and_delete)
     with pytest.raises(AttributeError):
         bp.parse_args([])
+
+def test_subparser():
+    bp = blargparse.BlargParser()
+    sp = bp.add_subparsers()
+    assert hasattr(sp, 'add_aggregate')
