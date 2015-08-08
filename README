@@ -2,7 +2,12 @@ Blargparse extends :py:class:`argparse.ArgumentParser`,
 adding an ``add_aggregate`` method that can help you separate
 your user interface logic from everything else.
 
-I wrote it because I found myself doing stuff like this. ::
+How to use
+-----------
+
+Why
+--------
+I wrote Blargparse because I found myself doing stuff like this. ::
 
     # Construct the parser.
     a = argparse.ArgumentParser()
@@ -27,5 +32,28 @@ arguments like this spread across several subparsers in different places,
 and the construction, parsing, and conversion of the arguments thus
 wound up spread across functions and even files.
 
-With :py:module:`argparse` I can do this. ::
+With vanilla :py:module:`argparse` I wound up doing stuff like this. ::
 
+    def _build_subparsers(argparser):
+        'This adds subparsers to the parser.'
+        subparsers = argparser.add_subparsers()
+        # ...
+
+    def _apply_aggregates(args):
+        args.range = range(args.left, args.right)
+        del(args.left, args.right)
+
+    argparser = argparser.ArgumentParser()
+    _build_subparsers(argparser)
+    args = argparser.parse_args()
+    _apply_aggregates(args)
+
+This is a bit better except that it groups subparsers together and
+aggregates together. I wanted subparsers to be grouped with relevant
+aggregates, and I did not want to group by whether something was a
+subparser or an aggregate; I think of the aggregates as components of
+the subparsers.
+
+A more confusing alternative would have been to come up with my own
+non-argparse interface on top of this for specifying groupings of
+subparsers and aggregates.
