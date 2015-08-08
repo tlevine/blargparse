@@ -19,7 +19,8 @@ class BlargParser(argparse.ArgumentParser):
         else:
             g = func
 
-        self._aggregates.append(g)
+        subparser_id = getattr(self, '_blarg_subparser_dest', None)
+        self._aggregates.append((subparser_id, g))
 
     def add_subparsers(self, dest = 'subparser'):
         out = super(BlargParser, self).add_subparsers(dest = dest)
@@ -29,16 +30,16 @@ class BlargParser(argparse.ArgumentParser):
 
     def parse_args(self, *args, **kwargs):
         namespace = super(BlargParser, self).parse_args(*args, **kwargs)
-
-        for descendant in self._blarg_descendants(namespace):
-            for func in descendant._aggregates:
-                func(namespace)
-
+        self._aggregate(namespace)
         return namespace
 
-    def _blarg_descendants(self, namespace):
-        yield self
+    def _aggregate(self, namespace):
+        for subparser_id, func in self._aggregates:
+            if subparser_id == None or subparser_id == self._blarg_subparser_dest:
+                func(namespace)
+
         if hasattr(self, '_blarg_children'):
             for key, value in dict(self._blarg_children._get_kwargs())['choices'].items():
                 if key == getattr(namespace, self._blarg_subparser_dest):
-                    yield from value._blarg_descendants(namespace)
+                    for func in value._aggregate(namespace):
+                        func(namespace)
