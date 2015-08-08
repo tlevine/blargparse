@@ -38,13 +38,5 @@ class BlargParser(argparse.ArgumentParser):
     def _blarg_descendants(self):
         yield self
         if hasattr(self, '_blarg_children'):
-            yield from dict(self._blarg_children._get_kwargs())['choices'].values()
-'''
-    def _all_aggregates(self):
-       #yield self._aggregates
-        parent = self
-        if hasattr(parent, '_blarg_children'):
-            for child in 
-                print(child)
-       #        yield from child._all_aggregates()
-'''
+            for child in dict(self._blarg_children._get_kwargs())['choices'].values():
+                yield from child._blarg_descendants()
