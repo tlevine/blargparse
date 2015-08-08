@@ -1,0 +1,31 @@
+Blargparse extends :py:class:`argparse.ArgumentParser`,
+adding an ``add_aggregate`` method that can help you separate
+your user interface logic from everything else.
+
+I wrote it because I found myself doing stuff like this. ::
+
+    # Construct the parser.
+    a = argparse.ArgumentParser()
+    a.add_argument('--left', '-l', type = int, default = 0)
+    a.add_argument('--right', 'r', type = int, default = 100)
+    
+    # Parse the arguments
+    import sys
+    ns = a.parse_args(sys.argv)
+
+    # Convert them into the form I want for my application.
+    numbers = range(ns.left, ns.right)
+
+The input argument that made most sense to me while programming the
+thing was the ``numbers`` range, but I thought it was easiest if the
+end user could specify this range as a combination of ``--left`` and
+``--right`` flags. And I might want to change that based on what
+users seem to prefer.
+
+The above approach is fine because it's small, but I had several
+arguments like this spread across several subparsers in different places,
+and the construction, parsing, and conversion of the arguments thus
+wound up spread across functions and even files.
+
+With :py:module:`argparse` I can do this. ::
+
