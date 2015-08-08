@@ -30,15 +30,16 @@ class BlargParser(argparse.ArgumentParser):
     def parse_args(self, *args, **kwargs):
         namespace = super(BlargParser, self).parse_args(*args, **kwargs)
 
-        for descendant in self._blarg_descendants():
+        for descendant in self._blarg_descendants(namespace):
             for func in descendant._aggregates:
                 func(namespace)
 
         return namespace
 
-    def _blarg_descendants(self):
+    def _blarg_descendants(self, namespace):
         yield self
         if hasattr(self, '_blarg_children'):
             for key, value in dict(self._blarg_children._get_kwargs())['choices'].items():
-                if key == self._blarg_subparser_dest:
-                    yield from value._blarg_descendants()
+                if hasattr(namespace, self._blarg_subparser_dest):
+                    if key == getattr(namespace, self._blarg_subparser_dest):
+                        yield from value._blarg_descendants(namespace)
