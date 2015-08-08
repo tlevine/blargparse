@@ -23,14 +23,14 @@ def make_range_and_delete(args):
     return r
 
 testcases_aggregates = [
-    (get_blargparser(0, 1000), 'range', make_range, {'range': lambda args:range(0, 1000)}),
-    (get_blargparser(0, 1000), None, make_range_mutate, {'numbers': lambda args:range(0, 1000)}),
+    (get_blargparser(0, 1000), 'range', make_range, {'range'}),
+    (get_blargparser(0, 1000), None, make_range_mutate, set()),
 ]
 
 @pytest.mark.parametrize('blargparser, dest, func, expected_aggregates', testcases_aggregates)
 def test_add_aggregate(blargparser, dest, func, expected_aggregates):
     blargparser.add_aggregate(dest, func = func)
-    assert set(blargparser._aggregates) == set(expected_aggregates)
+    assert blargparser._aggregate_dests == expected_aggregates
 
 def test_aggregate_dest():
     bp = get_blargparser(0, 100)
@@ -41,9 +41,15 @@ def test_aggregate_dest():
         bp.add_aggregate(4, func = lambda:None)
     bp.add_aggregate(dest = None, func = lambda:None)
 
-def test_parse_args():
+def test_parse_args_args():
     bp = get_blargparser(0, 100)
     bp.add_aggregate('range', make_range_and_delete)
+    expected = argparse.Namespace(range = range(0, 100), force = False)
+    assert bp.parse_args([]) == expected
+
+def test_parse_args_kwargs():
+    bp = get_blargparser(0, 100)
+    bp.add_aggregate(dest = 'range', func = make_range_and_delete)
     expected = argparse.Namespace(range = range(0, 100), force = False)
     assert bp.parse_args([]) == expected
 
