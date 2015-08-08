@@ -5,6 +5,31 @@ your user interface logic from everything else.
 How to use
 -----------
 
+Install from PyPI. ::
+
+    pip install blargparse
+
+Here's the simplest way to use it. ::
+
+    b = BlargParser()
+    b.add_argument('--left', '-l', type = int, default = 0)
+    b.add_argument('--right', 'r', type = int, default = 100)
+    b.add_aggregate('numbers', lambda args: range(args.left, args.right))
+
+    b.parse_args([]).numbers == range(0, 100)
+
+You can get a bit fancier. ::
+
+    b = BlargParser()
+    b.add_argument('--left', '-l', type = int, default = 0)
+    b.add_argument('--right', 'r', type = int, default = 100)
+    def f(args):
+        output = range(args.left, args.right)
+        del(args.left, args.right)
+    b.add_aggregate(f)
+
+    b.parse_args([]).numbers == range(0, 100)
+
 Why
 --------
 I wrote Blargparse because I found myself doing stuff like this. ::
