@@ -112,4 +112,4 @@ def test_multiple_subparsers():
     b.add_aggregate('BBB', lambda args:args.bbb.upper())
 
     assert bp.parse_args([]) == argparse.Namespace(command = None)
-    assert bp.parse_args(['a', '--aaa', 'tom']) == argparse.Namespace(command = None, aaa = 'tom', AAA = 'TOM')
+    assert bp.parse_args(['a', '--aaa', 'tom']) == argparse.Namespace(command = 'a', aaa = 'tom', AAA = 'TOM')
