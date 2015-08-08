@@ -71,3 +71,10 @@ def test_subparser():
     sps = bp.add_subparsers()
     sp = sps.add_parser('abc')
     assert hasattr(sp, 'add_aggregate')
+
+    sp.add_argument('--numerator', '-n', type = float, default = 10.0)
+    sp.add_argument('--denominator', '-d', type = float, default = 4.0)
+    sp.add_aggregate('frac', lambda args:args.numerator/args.denominator)
+
+    assert sp.parse_args([]).frac == 2.5
+    assert bp.parse_args([]).frac == 2.5
