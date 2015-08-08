@@ -3,16 +3,26 @@ import argparse
 class BlargParser(argparse.ArgumentParser):
     def __init__(self, *args, **kwargs):
         super(BlargParser, self).__init__(*args, **kwargs)
-        self._aggregates = {}
+        self._aggregates = []
+        self._aggregate_dests = set()
 
-    def add_aggregate(self, dest, func = lambda args:None):
-        if dest in self._aggregates:
-            raise AttributeError('aggregate named %s already exists' % dest)
+    def add_aggregate(self, dest = None, func = lambda args:None):
+        if dest:
+            if dest in self._aggregate_dests:
+                raise AttributeError('Aggregate named %s already exists' % dest)
+            elif not isinstance(dest, str):
+                raise TypeError('Aggregate dest must be str type.')
+            else:
+                self._aggregate_dests.add(dest)
+                def g(args):
+                    setattr(args, dest, func(args))
         else:
-            self._aggregates[dest] = func
+            g = func
+
+        self._aggregates.append(g)
 
     def parse_args(self, *args, **kwargs):
         namespace = super(BlargParser, self).parse_args(*args, **kwargs)
-        for dest, func in self._aggregates.items():
-            setattr(namespace, dest, func(namespace))
+        for func in self._aggregates:
+            func(namespace)
         return namespace
