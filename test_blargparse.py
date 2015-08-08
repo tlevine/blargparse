@@ -68,5 +68,6 @@ def test_parse_args_mutate():
 
 def test_subparser():
     bp = blargparse.BlargParser()
-    sp = bp.add_subparsers()
+    sps = bp.add_subparsers()
+    sp = sps.add_parser('abc')
     assert hasattr(sp, 'add_aggregate')
