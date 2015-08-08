@@ -68,7 +68,7 @@ def test_parse_args_mutate():
 
 def test_subparser():
     bp = blargparse.BlargParser()
-    sps = bp.add_subparsers()
+    sps = bp.add_subparsers(dest = 'command')
     sp = sps.add_parser('abc')
     assert hasattr(sp, 'add_aggregate')
 
@@ -77,4 +77,6 @@ def test_subparser():
     sp.add_aggregate('frac', lambda args:args.numerator/args.denominator)
 
     assert sp.parse_args([]).frac == 2.5
-    assert bp.parse_args([]).frac == 2.5
+    blargs = bp.parse_args(['abc'])
+    assert blargs.command == 'abc'
+    assert blargs.frac == 2.5
