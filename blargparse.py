@@ -21,8 +21,9 @@ class BlargParser(argparse.ArgumentParser):
 
         self._aggregates.append(g)
 
-    def add_subparsers(self, **kwargs):
-        out = super(BlargParser, self).add_subparsers(**kwargs)
+    def add_subparsers(self, dest = 'subparser'):
+        out = super(BlargParser, self).add_subparsers(dest = dest)
+        self._blarg_subparser_dest = dest
         self._blarg_children = out
         return out
 
@@ -38,5 +39,6 @@ class BlargParser(argparse.ArgumentParser):
     def _blarg_descendants(self):
         yield self
         if hasattr(self, '_blarg_children'):
-            for child in dict(self._blarg_children._get_kwargs())['choices'].values():
-                yield from child._blarg_descendants()
+            for key, value in dict(self._blarg_children._get_kwargs())['choices'].items():
+                if key == self._blarg_subparser_dest:
+                    yield from value._blarg_descendants()
