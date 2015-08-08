@@ -7,7 +7,7 @@ setup(name='blargparse',
       url='https://github.com/tlevine/blargparse',
       py_modules=['blargparse'],
       tests_require = ['pytest'],
-      version='0.0.1',
+      version='0.0.2',
       license='LGPL',
 )
 

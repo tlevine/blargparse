@@ -1,4 +1,4 @@
-Blargparse extends :py:class:`argparse.ArgumentParser`,
+Blargparse extends ``argparse.ArgumentParser``,
 adding an ``add_aggregate`` method that can help you separate
 your user interface logic from everything else.
 
@@ -57,7 +57,7 @@ arguments like this spread across several subparsers in different places,
 and the construction, parsing, and conversion of the arguments thus
 wound up spread across functions and even files.
 
-With vanilla :py:module:`argparse` I wound up doing stuff like this. ::
+With vanilla ``argparse`` I wound up doing stuff like this. ::
 
     def _build_subparsers(argparser):
         'This adds subparsers to the parser.'
