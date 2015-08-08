@@ -23,6 +23,7 @@ class BlargParser(argparse.ArgumentParser):
 
     def parse_args(self, *args, **kwargs):
         namespace = super(BlargParser, self).parse_args(*args, **kwargs)
+        print(self._get_positional_actions())
         for func in self._aggregates:
             func(namespace)
         return namespace

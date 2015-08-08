@@ -79,4 +79,22 @@ def test_subparser():
     assert sp.parse_args([]).frac == 2.5
     blargs = bp.parse_args(['abc'])
     assert blargs.command == 'abc'
+    assert hasattr(blargs, 'frac')
+    assert blargs.frac == 2.5
+
+def test_subsubparser():
+    zero = blargparse.BlargParser()
+    one = zero.add_subparsers(dest = 'one').add_parser('aa')
+    two = one.add_subparsers(dest = 'two').add_parser('bb')
+    assert hasattr(two, 'add_aggregate')
+
+    two.add_argument('--numerator', '-n', type = float, default = 10.0)
+    two.add_argument('--denominator', '-d', type = float, default = 4.0)
+    two.add_aggregate('frac', lambda args:args.numerator/args.denominator)
+
+    assert two.parse_args([]).frac == 2.5
+    blargs = zero.parse_args(['aa', 'bb'])
+    assert blargs.one == 'aa'
+    assert blargs.two == 'bb'
+    assert hasattr(blargs, 'frac')
     assert blargs.frac == 2.5
