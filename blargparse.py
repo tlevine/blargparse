@@ -39,7 +39,6 @@ class BlargParser(argparse.ArgumentParser):
     def _blarg_descendants(self, namespace):
         yield self
         if hasattr(self, '_blarg_children'):
-            if hasattr(namespace, self._blarg_subparser_dest):
-                for key, value in dict(self._blarg_children._get_kwargs())['choices'].items():
-                    if key == getattr(namespace, self._blarg_subparser_dest):
-                        yield from value._blarg_descendants(namespace)
+            for key, value in dict(self._blarg_children._get_kwargs())['choices'].items():
+                if key == getattr(namespace, self._blarg_subparser_dest):
+                    yield from value._blarg_descendants(namespace)
