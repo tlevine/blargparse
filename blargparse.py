@@ -7,7 +7,7 @@ class BlargParser(argparse.ArgumentParser):
 
     def add_aggregate(self, dest, func = lambda args:None):
         if dest in self._aggregates:
-            raise argparse.ArgumentError('aggregate %s already exists')
+            raise AttributeError('aggregate named %s already exists' % dest)
         else:
             self._aggregates[dest] = func
 

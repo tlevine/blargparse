@@ -37,7 +37,7 @@ def test_parse_args():
 def test_parse_args_collision():
     bp = get_blargparser(0, 10)
     bp.add_aggregate('something', lambda x:None)
-    with pytest.raises(argparse.ArgumentError):
+    with pytest.raises(AttributeError):
         bp.add_aggregate('something', lambda:3)
 
 def test_parse_args_mutate():
