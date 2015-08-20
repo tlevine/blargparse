@@ -113,3 +113,8 @@ def test_multiple_subparsers():
 
     assert bp.parse_args([]) == argparse.Namespace(command = None)
     assert bp.parse_args(['a', '--aaa', 'tom']) == argparse.Namespace(command = 'a', aaa = 'tom', AAA = 'TOM')
+
+def test_mutually_exclusive_group():
+    bp = get_blargparser(0, 1000)
+    loanflags = bp.add_mutually_exclusive_group()
+    loanflags.add_aggregate
